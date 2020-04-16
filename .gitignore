@@ -1,0 +1,13 @@
+.idea/
+.gradle/
+**/.idea/workspace.xml
+**/.idea/tasks.xml
+**/.metadata/**
+**/.project
+**/.classpath
+**/.settings/**
+local.properties
+build
+**/*.iml
+target
+
