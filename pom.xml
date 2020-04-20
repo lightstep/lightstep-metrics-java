@@ -6,7 +6,6 @@
 
   <groupId>com.lightstep.tracer</groupId>
   <artifactId>java-metrics</artifactId>
-  <packaging>jar</packaging>
   <version>0.1.1</version>
 
   <name>LightStep Metrics Reporter</name>
