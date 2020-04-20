@@ -9,6 +9,10 @@
   <packaging>jar</packaging>
   <version>0.1.0</version>
 
+  <name>LightStep Metrics Reporter</name>
+  <description>LightStep Metrics Reporter</description>
+  <url>https://github.com/lightstep/lightstep-metrics-java</url>
+
   <!-- Note: Dependencies' versions need to match the OTel exporter and LS Tracers. -->
   <properties>
     <maven.compiler.source>1.8</maven.compiler.source>
