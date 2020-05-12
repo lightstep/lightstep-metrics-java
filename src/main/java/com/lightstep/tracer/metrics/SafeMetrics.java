@@ -7,18 +7,36 @@ public final class SafeMetrics {
   private static final Logger logger = LoggerFactory.getLogger(SafeMetrics.class);
   private static final boolean isJdk17 = System.getProperty("java.version").startsWith("1.7");
 
+  private static final int DEFAULT_SAMPLE_PERIOD_SEC = 30;
+
   private SafeMetrics() {}
 
-  public static Metrics createMetricsThread(final String serviceName, final String accessToken,
-            final String serviceVersion, final String serviceUrl, final int samplePeriodSeconds) {
+  public static Metrics createMetricsThread(String serviceName, String metricsUrl,
+            String accessToken, String serviceVersion) {
+
+    if (serviceName == null) {
+      throw new NullPointerException("serviceName");
+    }
+
+    if (metricsUrl == null) {
+      throw new NullPointerException("metricsUrl");
+    }
+
+    if (accessToken == null) {
+      accessToken = "";
+    }
+
+    if (serviceVersion == null) {
+      serviceVersion = "";
+    }
+
     if (isJdk17) {
       logger.warn("Metrics supports jdk1.8+");
       return null;
     }
 
-    // TODO: Can we unify samplePeriodSeconds in a single place?
     final Sender<?,?> sender = new OkHttpSender(serviceName, accessToken, serviceVersion,
-                serviceUrl, samplePeriodSeconds * 1000, false);
-    return new Metrics(sender, samplePeriodSeconds);
+                metricsUrl, DEFAULT_SAMPLE_PERIOD_SEC * 1000, false);
+    return new Metrics(sender, DEFAULT_SAMPLE_PERIOD_SEC);
   }
 }
