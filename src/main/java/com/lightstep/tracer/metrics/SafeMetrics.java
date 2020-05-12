@@ -11,12 +11,15 @@ public final class SafeMetrics {
 
   private SafeMetrics() {}
 
-  public static Metrics createMetricsThread(String serviceName, String accessToken,
-            String serviceVersion, String metricsUrl) {
+  public static Metrics createMetricsThread(String serviceName, String metricsUrl,
+            String accessToken, String serviceVersion) {
 
-    if (isJdk17) {
-      logger.warn("Metrics supports jdk1.8+");
-      return null;
+    if (serviceName == null) {
+      throw new NullPointerException("serviceName");
+    }
+
+    if (metricsUrl == null) {
+      throw new NullPointerException("metricsUrl");
     }
 
     if (accessToken == null) {
@@ -25,6 +28,11 @@ public final class SafeMetrics {
 
     if (serviceVersion == null) {
       serviceVersion = "";
+    }
+
+    if (isJdk17) {
+      logger.warn("Metrics supports jdk1.8+");
+      return null;
     }
 
     final Sender<?,?> sender = new OkHttpSender(serviceName, accessToken, serviceVersion,

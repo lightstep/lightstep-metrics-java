@@ -31,9 +31,9 @@ import com.lightstep.tracer.metrics.SafeMetricsReporter;
   // Done once, at application initialization.
   Metrics metrics = SafeMetricsReporter.createMetricsThread(
       "MyServiceName", // Service/Component name.
+      "https://" // Metrics url
       "MyAccessToken", // Access Token. Nullable
       "1.2.3", // Service version. Nullable
-      "https://" // Metrics url
   );
 
   // Metrics inherits from Thread.

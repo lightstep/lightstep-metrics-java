@@ -13,18 +13,28 @@ public class SafeMetricsTest {
       return;
     }
 
-    assertNull(SafeMetrics.createMetricsThread(null, null, null, null));
+    assertNull(SafeMetrics.createMetricsThread("Service", "https://", "accesstoken", "1.2.3"));
+  }
+
+  @Test(expected = NullPointerException.class)
+  public void testNullServiceName() {
+    SafeMetrics.createMetricsThread(null, "https://", "accesstoken", "1.2.3");
+  }
+
+  @Test(expected = NullPointerException.class)
+  public void testNullMetricsUrl() {
+    SafeMetrics.createMetricsThread("Service", null, "accesstoken", "1.2.3");
   }
 
   @Test
   public void testNullAccessToken() {
-    Metrics m = SafeMetrics.createMetricsThread("Service", null, "1.2.3", "https://");
+    Metrics m = SafeMetrics.createMetricsThread("Service", "https://", null, "1.2.3");
     assertNotNull(m);
   }
 
   @Test
   public void testNullServiceVersion() {
-    Metrics m = SafeMetrics.createMetricsThread("Service", "accesstoken", null, "https://");
+    Metrics m = SafeMetrics.createMetricsThread("Service", "https://", "accesstoken", null);
     assertNotNull(m);
   }
 }
