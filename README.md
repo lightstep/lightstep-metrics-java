@@ -14,7 +14,7 @@ the reported metrics will be ignored at the backend.
 
 ### Maven
 
-```
+```xml
 <dependency>
    <groupId>com.lightstep.tracer</groupId>
    <artifactId>java-metrics-reporter</artifactId>
@@ -24,7 +24,7 @@ the reported metrics will be ignored at the backend.
 
 ### Usage
 
-```
+```java
 import com.lightstep.tracer.metrics.Metrics;
 import com.lightstep.tracer.metrics.SafeMetricsReporter;
 ...
