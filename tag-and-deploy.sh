@@ -9,16 +9,10 @@
 # Use maven-help-plugin to get the current project.version
 VERSION=`mvn org.apache.maven.plugins:maven-help-plugin:2.1.1:evaluate -Dexpression=project.version | grep -v '\['`
 
-# Tag the new version
-git tag $VERSION
-
-# Push the tag
-git push --tags
-
 echo "Publishing $VERSION"
 
 # Build and deploy to Bintray
-mvn deploy
+mvn -s .circleci.settings.xml deploy
 
 # Sign the jar and other files in Bintray
 curl -H "X-GPG-PASSPHRASE:$BINTRAY_GPG_PASSPHRASE" -u $BINTRAY_USER:$BINTRAY_API_KEY -X POST https://api.bintray.com/gpg/lightstep/maven/java-metrics/versions/$VERSION
