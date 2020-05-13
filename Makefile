@@ -12,6 +12,10 @@ test: ci_test
 ci_test: clean
 	mvn test
 
+# Needed only in CircleCI to FORCE the help plugin to be installed (resolve-plugins is NOT enough).
+resolve_plugins:
+	mvn org.apache.maven.plugins:maven-help-plugin:2.1.1:evaluate -Dexpression=project.version
+
 # If no version is specified, the minor version will be automatically increased.
 inc-version:
 	./inc-version.sh $(NEW_VERSION)
@@ -26,7 +30,7 @@ inc-version:
 #        <password>xxx</password>
 #    </server>
 #
-publish: build
+publish: build resolve_plugins
 	@test -n "$$BINTRAY_USER" || (echo "BINTRAY_USER must be defined to publish" && false)
 	@test -n "$$BINTRAY_API_KEY" || (echo "BINTRAY_API_KEY must be defined to publish" && false)
 	@test -n "$$MAVEN_CENTRAL_USER_TOKEN" || (echo "MAVEN_CENTRAL_USER_TOKEN must be defined to publish" && false)
