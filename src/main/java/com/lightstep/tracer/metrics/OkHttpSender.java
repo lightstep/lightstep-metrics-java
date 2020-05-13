@@ -14,10 +14,12 @@ import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
+import okhttp3.Response;
 
 public class OkHttpSender extends ProtobufSender {
   private static final String OCTET_STREAM_TYPE = "application/octet-stream";
   private static final MediaType protoMediaType = MediaType.parse(OCTET_STREAM_TYPE);
+  private static final byte[] EMPTY_BUFFER = new byte[0];
 
   private final AtomicReference<OkHttpClient> client;
   private final URL collectorURL;
@@ -48,7 +50,15 @@ public class OkHttpSender extends ProtobufSender {
       .build());
 
     call.timeout().deadline(timeout, TimeUnit.MILLISECONDS);
-    return IngestResponse.parseFrom(call.execute().body().byteStream());
+    Response response = call.execute();
+
+    // Don't try to further process requests with 4xx/5xx (mostly).
+    // TODO: 5xx errors should be retried properly.
+    if (response.code() != 200) {
+      return IngestResponse.parseFrom(EMPTY_BUFFER);
+    }
+
+    return IngestResponse.parseFrom(response.body().byteStream());
   }
 
   private OkHttpClient client() {
