@@ -12,8 +12,9 @@ test: ci_test
 ci_test: clean
 	mvn test
 
+# If no version is specified, the minor version will be automatically increased.
 inc-version:
-	./inc-version.sh
+	./inc-version.sh $(NEW_VERSION)
 
 # See https://bintray.com/lightstep for published artifacts
 # You must have the following entry in your settings.xml of your .m2 directory
