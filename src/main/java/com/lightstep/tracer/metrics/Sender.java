@@ -38,6 +38,7 @@ public abstract class Sender<I,O> implements AutoCloseable {
     // We might not want the first report, as we'd get accumulated data.
     if (!readyToReport) {
       readyToReport = true;
+      setRequest(null);
       return null;
     }
 
