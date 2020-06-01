@@ -9,12 +9,11 @@ public abstract class Sender<I,O> implements AutoCloseable {
   protected final String serviceUrl;
 
   Sender(final String componentName, final String accessToken, final String serviceVersion,
-            final String serviceUrl, final boolean sendFirstReport) {
+            final String serviceUrl) {
     this.componentName = componentName;
     this.accessToken = accessToken;
     this.serviceVersion = serviceVersion;
     this.serviceUrl = serviceUrl;
-    this.readyToReport = sendFirstReport;
   }
 
   abstract <V extends Number>void createMessage(I request, long timestampSeconds, long durationSeconds,
@@ -28,15 +27,13 @@ public abstract class Sender<I,O> implements AutoCloseable {
   private long previousTimestamp = System.currentTimeMillis() / 1000;
   private boolean readyToReport;
 
-  private String reporter;
-
   final O exec(final long timeout) throws Exception {
     final I request = getRequest();
     if (request == null)
       throw new IllegalStateException("Request should not be null");
 
-    // We might not want the first report, as we'd get accumulated data.
     if (!readyToReport) {
+      // First report duration is nearly 0 therefore it should be dropped
       readyToReport = true;
       setRequest(null);
       return null;

@@ -19,12 +19,12 @@ public class GrpcSender extends ProtobufSender {
   private final String servicePath;
   private final int servicePort;
 
-  public GrpcSender(final String componentName, final String accessToken, final String serviceUrl, final boolean sendFirstReport) {
-      this(componentName, accessToken, "", serviceUrl, sendFirstReport);
+  public GrpcSender(final String componentName, final String accessToken, final String serviceUrl) {
+      this(componentName, accessToken, "", serviceUrl);
   }
 
-  public GrpcSender(final String componentName, final String accessToken, final String serviceVersion, final String serviceUrl, final boolean sendFirstReport) {
-    super(componentName, accessToken, serviceVersion, serviceUrl, sendFirstReport);
+  public GrpcSender(final String componentName, final String accessToken, final String serviceVersion, final String serviceUrl) {
+    super(componentName, accessToken, serviceVersion, serviceUrl);
 
     final int colon = serviceUrl.indexOf(":");
     servicePath = serviceUrl.substring(0, colon);
