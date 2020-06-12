@@ -23,8 +23,8 @@ abstract class ProtobufSender extends Sender<IngestRequest.Builder,IngestRespons
   private final KeyValue.Builder[] labels;
 
   ProtobufSender(final String componentName, final String accessToken, final String serviceVersion,
-            final String serviceUrl, final boolean sendFirstReport) {
-    super(componentName, accessToken, serviceVersion, serviceUrl, sendFirstReport);
+            final String serviceUrl) {
+    super(componentName, accessToken, serviceVersion, serviceUrl);
 
     final String hostname = getHostname();
 

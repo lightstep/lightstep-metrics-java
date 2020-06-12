@@ -26,8 +26,8 @@ public class OkHttpSender extends ProtobufSender {
   private final long deadlineMillis;
 
   public OkHttpSender(final String componentName, final String accessToken, final String serviceVersion,
-            final String serviceUrl, final int deadlineMillis, final boolean sendFirstReport) {
-    super(componentName, accessToken, serviceVersion, serviceUrl, sendFirstReport);
+            final String serviceUrl, final int deadlineMillis) {
+    super(componentName, accessToken, serviceVersion, serviceUrl);
     this.deadlineMillis = deadlineMillis;
     this.client = new AtomicReference<>(start(deadlineMillis));
 

@@ -32,16 +32,23 @@ public class MetricsTest {
       final TestServer server = new TestServer(servicePort, req -> {
         assertEquals(id[0] = (id[0] == null ? req.getIdempotencyKey() : id[0]), req.getIdempotencyKey());
       }, (req,res) -> {
+        verifyPositiveDurations(req);
         assertMetric(countsPerSample, req);
         counter.getAndIncrement();
         id[0] = null;
       });
-      final Metrics metrics = new Metrics(new GrpcSender(componentName, null, serviceUrl, true), samplePeriod);
+      final Metrics metrics = new Metrics(new GrpcSender(componentName, null, serviceUrl), samplePeriod);
     ) {
       server.start();
       metrics.start();
       Thread.sleep(2 * samplePeriod * 1000 + 500);
-      assertEquals(3, counter.get());
+      assertEquals(2, counter.get());
+    }
+  }
+
+  private void verifyPositiveDurations(IngestRequest request) {
+    for (MetricPoint point : request.getPointsList()) {
+      assertTrue(point.getDuration().getSeconds() > 0);
     }
   }
 
@@ -90,7 +97,7 @@ public class MetricsTest {
     final int[] expectedPointCounts = {countsPerSample, countsPerSample};
     final IdTest idTest = new IdTest();
     try (
-      final Metrics metrics = new Metrics(new GrpcSender(componentName, null, serviceUrl, true), samplePeriod);
+      final Metrics metrics = new Metrics(new GrpcSender(componentName, null, serviceUrl), samplePeriod);
       final TestServer server = new TestServer(servicePort, req -> {
         idTest.assertIds(req);
       }, (req,res) -> {
@@ -101,8 +108,8 @@ public class MetricsTest {
       // 1. Start the metrics engine, but the server is off.
       metrics.start();
 
-      // 2. Sleep for 2 seconds, allowing the metrics engine to engage its retry mechanism.
-      Thread.sleep(2000);
+      // 2. Sleep for 7 seconds, allowing the metrics engine to engage its retry mechanism.
+      Thread.sleep(7000);
 
       // 3. Start the server.
       server.start();
@@ -127,7 +134,7 @@ public class MetricsTest {
     final int[] expectedPointCounts = {2 * countsPerSample, countsPerSample};
     final IdTest idTest = new IdTest();
     try (
-      final Metrics metrics = new Metrics(new GrpcSender(componentName, null, serviceUrl, true), samplePeriod);
+      final Metrics metrics = new Metrics(new GrpcSender(componentName, null, serviceUrl), samplePeriod);
       final TestServer server = new TestServer(servicePort, req -> {
         idTest.assertIds(req);
       }, (req,res) -> {
@@ -138,8 +145,8 @@ public class MetricsTest {
       // 1. Start the metrics engine, but the server is off.
       metrics.start();
 
-      // 2. Sleep for 6 seconds, allowing the metrics engine to engage its retry mechanism.
-      Thread.sleep(6000);
+      // 2. Sleep for 11 seconds, allowing the metrics engine to engage its retry mechanism.
+      Thread.sleep(11000);
 
       // 3. Start the server.
       server.start();
@@ -162,7 +169,7 @@ public class MetricsTest {
     final int[] expectedPointCounts = {3 * countsPerSample, countsPerSample};
     final IdTest idTest = new IdTest();
     try (
-      final Metrics metrics = new Metrics(new GrpcSender(componentName, null, serviceUrl, true), samplePeriod);
+      final Metrics metrics = new Metrics(new GrpcSender(componentName, null, serviceUrl), samplePeriod);
       final TestServer server = new TestServer(servicePort, req -> {
         idTest.assertIds(req);
       }, (req,res) -> {
