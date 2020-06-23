@@ -26,14 +26,19 @@ the reported metrics will be ignored at the backend.
 
 ```java
 import com.lightstep.tracer.metrics.Metrics;
-import com.lightstep.tracer.metrics.SafeMetricsReporter;
+import com.lightstep.tracer.metrics.OkHttpSender;
 ...
   // Done once, at application initialization.
-  Metrics metrics = SafeMetricsReporter.createMetricsThread(
+  Sender<?,?> sender = new OkHttpSender(
       "MyServiceName", // Service/Component name.
-      "https://" // Metrics url
       "MyAccessToken", // Access Token. Nullable
       "1.2.3", // Service version. Nullable
+      "https://" // Metrics url
+      30000 // connect timeout in milliseconds
+  );
+  Metrics metrics = new Metrics(
+      sender, 
+      30 // sample period in seconds
   );
 
   // Metrics inherits from Thread.
