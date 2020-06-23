@@ -27,6 +27,7 @@ the reported metrics will be ignored at the backend.
 ```java
 import com.lightstep.tracer.metrics.Metrics;
 import com.lightstep.tracer.metrics.OkHttpSender;
+import com.lightstep.tracer.metrics.Sender;
 ...
   // Done once, at application initialization.
   Sender<?,?> sender = new OkHttpSender(
