@@ -37,6 +37,7 @@ import com.lightstep.tracer.metrics.Sender;
       "https://" // Metrics url
       30000 // connect timeout in milliseconds
   );
+
   Metrics metrics = new Metrics(
       sender, 
       30 // sample period in seconds
