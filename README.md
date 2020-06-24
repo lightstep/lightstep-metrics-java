@@ -38,12 +38,12 @@ import com.lightstep.tracer.metrics.Sender;
       30000 // connect timeout in milliseconds
   );
 
+  // Metrics inherits from Thread.
   Metrics metrics = new Metrics(
       sender, 
       30 // sample period in seconds
   );
 
-  // Metrics inherits from Thread.
   metrics.setDaemon(true);
   metrics.start();
 
