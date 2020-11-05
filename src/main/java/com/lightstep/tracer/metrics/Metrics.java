@@ -81,6 +81,7 @@ public class Metrics extends Thread implements Retryable<Void>, AutoCloseable {
           @Override
           public void run() {
             try {
+              finishBy = (sender.getPreviousTimestamp() + samplePeriodSeconds) * 1000;
               long currentTimeMillis = System.currentTimeMillis();
               long timeout;
               if (finishBy < currentTimeMillis) {
