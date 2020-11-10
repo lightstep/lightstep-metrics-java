@@ -39,7 +39,7 @@ public class Metrics extends Thread implements Retryable<Void>, AutoCloseable {
   private final HardwareAbstractionLayer hal = new SystemInfo().getHardware();
   private final MetricGroup[] metricGroups = {new CpuMetricGroup(hal), new NetworkMetricGroup(hal), new MemoryMetricGroup(hal), new GcMetricGroup(hal)};
 
-  private final int samplePeriodMillis;
+  private final long samplePeriodMillis;
   private final Sender<?,?> sender;
   private boolean closed;
 
