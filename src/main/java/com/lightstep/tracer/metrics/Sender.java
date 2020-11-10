@@ -65,6 +65,6 @@ public abstract class Sender<I, O> implements AutoCloseable {
     }
 
     this.request = request;
-    return previousTimestamp;
+    return this.previousTimestamp;
   }
 }
