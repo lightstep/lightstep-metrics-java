@@ -47,7 +47,7 @@ public class Metrics extends Thread implements Retryable<Void>, AutoCloseable {
     if (samplePeriodSeconds < 1)
       throw new IllegalArgumentException("samplePeriodSeconds (" + samplePeriodSeconds + ") < 1");
 
-    this.samplePeriodMillis = samplePeriodSeconds * 1000;
+    this.samplePeriodMillis = samplePeriodSeconds * 1000L;
     this.sender = sender;
   }
 
