@@ -180,13 +180,13 @@ public class MetricsTest {
       // 1. Start the metrics engine, but the server is off.
       metrics.start();
 
-      // 2. Sleep for 8 seconds, allowing the metrics engine to engage its retry mechanism, leading to 1 message failing.
-      Thread.sleep(8000);
+      // 2. Sleep for 9 seconds, allowing the metrics engine to engage its retry mechanism, leading to 1 message failing.
+      Thread.sleep(9000);
 
       // 3. Start the server.
       server.start();
 
-      Thread.sleep(2000);
+      Thread.sleep(3000);
       assertEquals(1, counter.get());
 
       Thread.sleep(4000);
