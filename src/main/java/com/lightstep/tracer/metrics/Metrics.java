@@ -39,7 +39,7 @@ public class Metrics extends Thread implements Retryable<Void>, AutoCloseable {
   private final HardwareAbstractionLayer hal = new SystemInfo().getHardware();
   private final MetricGroup[] metricGroups = {new CpuMetricGroup(hal), new NetworkMetricGroup(hal), new MemoryMetricGroup(hal), new GcMetricGroup(hal)};
 
-  private final int samplePeriodSeconds;
+  private final int samplePeriodMillis;
   private final Sender<?,?> sender;
   private boolean closed;
 
@@ -47,7 +47,7 @@ public class Metrics extends Thread implements Retryable<Void>, AutoCloseable {
     if (samplePeriodSeconds < 1)
       throw new IllegalArgumentException("samplePeriodSeconds (" + samplePeriodSeconds + ") < 1");
 
-    this.samplePeriodSeconds = samplePeriodSeconds;
+    this.samplePeriodMillis = samplePeriodSeconds * 1000;
     this.sender = sender;
   }
 
@@ -68,20 +68,23 @@ public class Metrics extends Thread implements Retryable<Void>, AutoCloseable {
     try {
       Thread thread = null;
       while (!closed) {
-        final long previousTimeStamp = sender.updateSampleRequest(metricGroups);
         if (thread != null && thread.isAlive()) {
+          // should we wait for thread termination or interrupt it?
           final String message = "Thread should have self-terminated by now: " + (finishBy - System.currentTimeMillis());
-          if (logger.isDebugEnabled())
+          if (logger.isDebugEnabled()) {
             logger.warn(message + "\n" + stackTraceToString(thread.getStackTrace()));
-          else
+          } else {
             logger.warn(message);
+          }
         }
+        sender.updateSampleRequest(metricGroups);
 
+        final long timeStampMillis = System.currentTimeMillis();
         thread = new Thread() {
           @Override
           public void run() {
             try {
-              finishBy = (previousTimeStamp + samplePeriodSeconds) * 1000;
+              finishBy = timeStampMillis + samplePeriodMillis;
               retryPolicy.run(Metrics.this, finishBy - System.currentTimeMillis());
             }
             catch (final RetryFailureException e) {
@@ -97,7 +100,7 @@ public class Metrics extends Thread implements Retryable<Void>, AutoCloseable {
         thread.start();
 
         try {
-          sleep(samplePeriodSeconds * 1000);
+          sleep(samplePeriodMillis);
         }
         catch (final InterruptedException e) {
           return;

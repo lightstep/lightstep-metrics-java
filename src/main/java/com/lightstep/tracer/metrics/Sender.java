@@ -53,7 +53,7 @@ public abstract class Sender<I, O> implements AutoCloseable {
     this.request = request;
   }
 
-  final long updateSampleRequest(final MetricGroup[] metricGroups) throws IOException {
+  final void updateSampleRequest(final MetricGroup[] metricGroups) throws IOException {
     final long timestampSeconds = System.currentTimeMillis() / 1000;
     final long durationSeconds = timestampSeconds - this.previousTimestamp;
     this.previousTimestamp = timestampSeconds;
@@ -65,6 +65,5 @@ public abstract class Sender<I, O> implements AutoCloseable {
     }
 
     this.request = request;
-    return this.previousTimestamp;
   }
 }
