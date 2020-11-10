@@ -186,7 +186,7 @@ public class MetricsTest {
       // 3. Start the server.
       server.start();
 
-      Thread.sleep(4000);
+      Thread.sleep(3000);
       assertEquals(1, counter.get());
 
       Thread.sleep(4000);
