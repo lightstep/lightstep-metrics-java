@@ -68,7 +68,7 @@ public class Metrics extends Thread implements Retryable<Void>, AutoCloseable {
     try {
       Thread thread = null;
       while (!closed) {
-        sender.updateSampleRequest(metricGroups);
+        final long previousTimeStamp = sender.updateSampleRequest(metricGroups);
         if (thread != null && thread.isAlive()) {
           final String message = "Thread should have self-terminated by now: " + (finishBy - System.currentTimeMillis());
           if (logger.isDebugEnabled())
@@ -81,7 +81,7 @@ public class Metrics extends Thread implements Retryable<Void>, AutoCloseable {
           @Override
           public void run() {
             try {
-              finishBy = (sender.getPreviousTimestamp() + samplePeriodSeconds) * 1000;
+              finishBy = (previousTimeStamp + samplePeriodSeconds) * 1000;
               retryPolicy.run(Metrics.this, finishBy - System.currentTimeMillis());
             }
             catch (final RetryFailureException e) {
