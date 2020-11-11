@@ -15,6 +15,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+import okhttp3.ResponseBody;
 
 public class OkHttpSender extends ProtobufSender {
   private static final String OCTET_STREAM_TYPE = "application/octet-stream";
@@ -50,15 +51,18 @@ public class OkHttpSender extends ProtobufSender {
       .build());
 
     call.timeout().deadline(timeout, TimeUnit.MILLISECONDS);
-    Response response = call.execute();
+    try (Response response = call.execute()) {
 
-    // Don't try to further process requests with 4xx/5xx (mostly).
-    // TODO: 5xx errors should be retried properly.
-    if (response.code() != 200) {
-      return IngestResponse.parseFrom(EMPTY_BUFFER);
+      // Don't try to further process requests with 4xx/5xx (mostly).
+      // TODO: 5xx errors should be retried properly.
+      if (response.code() != 200) {
+        return IngestResponse.parseFrom(EMPTY_BUFFER);
+      }
+
+      try (ResponseBody body = response.body()) {
+        return IngestResponse.parseFrom(body.byteStream());
+      }
     }
-
-    return IngestResponse.parseFrom(response.body().byteStream());
   }
 
   private OkHttpClient client() {
