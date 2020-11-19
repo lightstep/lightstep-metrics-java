@@ -80,10 +80,16 @@ public class Metrics extends Thread implements Retryable<Void>, AutoCloseable {
         sender.updateSampleRequest(metricGroups);
 
         final long timeStampMillis = System.currentTimeMillis();
+        // Create new thread to send metrics:
         thread = new Thread() {
           @Override
           public void run() {
             try {
+              // Parent thread in a loop sleeps for 'samplePeriodMillis' between creation of such thread.
+              // This thread should end before parent thread will create new one to avoid race
+              // condition (threads share state).
+              // 'finishBy' is a timestamp when this tread should end, retryPolicy will try to send
+              // metrics until 'finishBy' is reached:
               finishBy = timeStampMillis + samplePeriodMillis;
               retryPolicy.run(Metrics.this, finishBy - System.currentTimeMillis());
             }
