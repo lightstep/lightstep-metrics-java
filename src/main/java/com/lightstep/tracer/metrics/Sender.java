@@ -2,7 +2,7 @@ package com.lightstep.tracer.metrics;
 
 import java.io.IOException;
 
-public abstract class Sender<I,O> implements AutoCloseable {
+public abstract class Sender<I, O> implements AutoCloseable {
   protected final String componentName;
   protected final String accessToken;
   protected final String serviceVersion;
@@ -29,8 +29,9 @@ public abstract class Sender<I,O> implements AutoCloseable {
 
   final O exec(final long timeout) throws Exception {
     final I request = getRequest();
-    if (request == null)
+    if (request == null) {
       throw new IllegalStateException("Request should not be null");
+    }
 
     if (!readyToReport) {
       // First report duration is nearly 0 therefore it should be dropped
@@ -52,18 +53,16 @@ public abstract class Sender<I,O> implements AutoCloseable {
     this.request = request;
   }
 
-  final long getPreviousTimestamp() {
-    return previousTimestamp;
-  }
-
   final void updateSampleRequest(final MetricGroup[] metricGroups) throws IOException {
     final long timestampSeconds = System.currentTimeMillis() / 1000;
-    final long durationSeconds = timestampSeconds - getPreviousTimestamp();
-    previousTimestamp = timestampSeconds;
+    final long durationSeconds = timestampSeconds - this.previousTimestamp;
+    this.previousTimestamp = timestampSeconds;
 
-    final I request = setReporter(setIdempotency(this.request != null ? this.request : newRequest()));
-    for (final MetricGroup metricGroup : metricGroups)
+    final I request = setReporter(
+        setIdempotency(this.request != null ? this.request : newRequest()));
+    for (final MetricGroup metricGroup : metricGroups) {
       metricGroup.execute(this, request, timestampSeconds, durationSeconds);
+    }
 
     this.request = request;
   }
