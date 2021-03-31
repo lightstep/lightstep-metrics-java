@@ -1,6 +1,6 @@
 # Lightstep Java Metrics Reporter
 
-[ ![Download](https://api.bintray.com/packages/lightstep/maven/java-metrics/images/download.svg) ](https://bintray.com/lightstep/maven/) [![Circle CI](https://circleci.com/gh/lightstep/lightstep-metrics-java.svg?style=shield)](https://circleci.com/gh/lightstep/lightstep-metrics-java)
+[ ![Download](https://img.shields.io/maven-central/v/com.lightstep.tracer/java-metrics-reporter.svg)](http://search.maven.org/#search%7Cga%7C1%7Ccom.lightstep.tracer%20java-metrics-reporter) [![Circle CI](https://circleci.com/gh/lightstep/lightstep-metrics-java.svg?style=shield)](https://circleci.com/gh/lightstep/lightstep-metrics-java)
 
 This library automatically reports a set of predefined host metrics
 (such as CPU and memory usage) to the Lightstep backend.
